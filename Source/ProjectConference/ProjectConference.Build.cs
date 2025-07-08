@@ -19,7 +19,10 @@ public class ProjectConference : ModuleRules
 			"StateTreeModule",
 			"GameplayStateTreeModule",
 			"Niagara",
-			"UMG"
+			"UMG",
+			"GameFeatures",
+			"ModularGameplay",
+			"GameplayTags"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] { });
