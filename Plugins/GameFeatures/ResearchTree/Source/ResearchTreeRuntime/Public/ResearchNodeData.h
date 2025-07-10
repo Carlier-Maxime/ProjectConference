@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
-#include "GameFeatureData.h"
 #include "ResearchNodeData.generated.h"
 
 /**
@@ -26,7 +25,7 @@ public:
 	TArray<TSoftObjectPtr<UResearchNodeData>> Prerequisites;
 
 	UPROPERTY(EditDefaultsOnly)
-	TSoftObjectPtr<UGameFeatureData> FeatureToActivate;
+	FPrimaryAssetId FeatureToActivateId = FPrimaryAssetId("GameFeatureData", NAME_None);
 
 	UPROPERTY(EditDefaultsOnly)
 	float ResearchCost;

@@ -44,8 +44,7 @@ void UResearchManagerComponent::StartResearch(UResearchNodeData* Node)
 void UResearchManagerComponent::FinishResearch(UResearchNodeData& Node)
 {
 	if (!CanResearch(&Node)) return;
-	FString PluginName;
-	Node.FeatureToActivate->GetPluginName(PluginName);
+	const FString PluginName = Node.FeatureToActivateId.PrimaryAssetName.ToString();
 	UGameFeaturesSubsystem::Get().LoadAndActivateGameFeaturePlugin(PluginName, {});
 }
 
@@ -54,7 +53,9 @@ bool UResearchManagerComponent::CanResearch(UResearchNodeData* Node) const
 	if (!Node) return false;
 	for (const auto& Prerequisite : Node->Prerequisites)
 	{
-		if (!Prerequisite->FeatureToActivate->IsGameFeaturePluginActive()) return false;
+		if (!Prerequisite || !Prerequisite->FeatureToActivateId.IsValid()) return false;
+		FString PrereqPluginName = Prerequisite->FeatureToActivateId.PrimaryAssetName.ToString();
+		if (!UGameFeaturesSubsystem::Get().IsGameFeaturePluginActive(PrereqPluginName)) return false;
 	}
 	return true;
 }
