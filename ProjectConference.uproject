@@ -37,6 +37,10 @@
 		{
 			"Name": "ConveyorFeature",
 			"Enabled": true
+		},
+		{
+			"Name": "ResearchTree",
+			"Enabled": true
 		}
 	]
 }
