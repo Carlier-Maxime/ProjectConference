@@ -8,7 +8,7 @@
 
 
 UCLASS(Blueprintable, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
-class PROJECTCONFERENCE_API UConveyorLogicComponent : public UActorComponent
+class UConveyorLogicComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
