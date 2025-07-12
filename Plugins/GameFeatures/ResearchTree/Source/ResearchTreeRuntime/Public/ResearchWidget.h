@@ -7,6 +7,7 @@
 #include "Blueprint/UserWidget.h"
 #include "ResearchWidget.generated.h"
 
+class UResearchManagerComponent;
 /**
  * 
  */
@@ -17,4 +18,6 @@ class RESEARCHTREERUNTIME_API UResearchWidget : public UUserWidget
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TArray<UResearchNodeData*> Researchs;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UResearchManagerComponent* Manager;
 };

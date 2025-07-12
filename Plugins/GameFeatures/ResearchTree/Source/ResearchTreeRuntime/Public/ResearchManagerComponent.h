@@ -40,7 +40,8 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 	void StartResearch(UResearchNodeData* Node);
-	bool CanResearch(UResearchNodeData* Node);
+	UFUNCTION(BlueprintCallable)
+	bool CanResearch(UResearchNodeData* Node) const;
 	void OpenCloseTree();
 
 private:

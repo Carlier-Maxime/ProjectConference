@@ -84,7 +84,7 @@ void UResearchManagerComponent::FinishResearch(UResearchNodeData& Node)
 	UGameFeaturesSubsystem::Get().LoadAndActivateGameFeaturePlugin(PluginName, {});
 }
 
-bool UResearchManagerComponent::CanResearch(UResearchNodeData* Node)
+bool UResearchManagerComponent::CanResearch(UResearchNodeData* Node) const
 {
 	if (!Node) return false;
 	for (const auto& Prerequisite : Node->Prerequisites)
@@ -103,6 +103,7 @@ void UResearchManagerComponent::OpenCloseTree()
 	{
 		Widget = CreateWidget<UResearchWidget>(GetWorld(), WidgetClass);
 		Widget->Researchs = Nodes;
+		Widget->Manager = this;
 		Widget->AddToViewport();
 	} else {
 		Widget->RemoveFromParent();
