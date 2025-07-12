@@ -16,5 +16,5 @@ class RESEARCHTREERUNTIME_API UResearchWidget : public UUserWidget
 	GENERATED_BODY()
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	UResearchNodeData* Root;
+	TArray<UResearchNodeData*> Researchs;
 };

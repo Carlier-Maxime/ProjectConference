@@ -102,7 +102,7 @@ void UResearchManagerComponent::OpenCloseTree()
 	if (!Widget)
 	{
 		Widget = CreateWidget<UResearchWidget>(GetWorld(), WidgetClass);
-		Widget->Root = Root;
+		Widget->Researchs = Nodes;
 		Widget->AddToViewport();
 	} else {
 		Widget->RemoveFromParent();

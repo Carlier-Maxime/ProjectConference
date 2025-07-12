@@ -45,7 +45,7 @@ public:
 
 private:
 	UPROPERTY(EditAnywhere)
-	UResearchNodeData* Root = nullptr;
+	TArray<UResearchNodeData*> Nodes;
 	void FinishResearch(UResearchNodeData& Node);
 	UPROPERTY()
 	UResearchWidget* Widget = nullptr;
