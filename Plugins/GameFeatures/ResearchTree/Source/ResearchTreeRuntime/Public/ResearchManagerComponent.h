@@ -25,8 +25,11 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
-	FPrimaryAssetId InputConfigId = FPrimaryAssetId("ResearchInputConfig", NAME_None);
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSoftObjectPtr<UInputMappingContext> IMC;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSoftObjectPtr<UInputAction> OpenTreeAction;
 
 public:
 	// Called every frame

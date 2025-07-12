@@ -7,8 +7,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "ResearchNodeData.h"
 #include "GameFeaturesSubsystem.h"
-#include "ResearchInputConfig.h"
-#include "Engine/AssetManager.h"
+#include "InputMappingContext.h"
 
 
 // Sets default values for this component's properties
@@ -41,24 +40,21 @@ void UResearchManagerComponent::BeginPlay()
 		UE_LOG(LogTemp, Error, TEXT("'%s' Failed to find a Local Player with GetOwner"), *GetNameSafe(this));
 		return;
 	}
-
-	TSharedPtr<FStreamableHandle> Handle = UAssetManager::Get().LoadPrimaryAsset(InputConfigId);
-	const UResearchInputConfig* Cfg = Cast<UResearchInputConfig>(UAssetManager::Get().GetPrimaryAssetObject(InputConfigId));
-	if (!Cfg) return;
+	
 	
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
 	{
-		if (!Cfg->IMC.IsValid()) return;
-		const auto IMC = Cfg->IMC.LoadSynchronous();
-		Subsystem->AddMappingContext(IMC, 0);
+		const auto IMC_ = IMC.LoadSynchronous();
+		if (!IMC_) return;
+		Subsystem->AddMappingContext(IMC_, 0);
 	}
 
 	// Set up action bindings
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PC->InputComponent))
 	{
-		if (!Cfg->OpenTreeAction.IsValid()) return;
-		const auto OpenTreeAction = Cfg->OpenTreeAction.LoadSynchronous();
-		EnhancedInputComponent->BindAction(OpenTreeAction, ETriggerEvent::Triggered, this, &UResearchManagerComponent::OpenCloseTree);
+		const auto OpenTreeAction_ = OpenTreeAction.LoadSynchronous();
+		if (!OpenTreeAction_) return;
+		EnhancedInputComponent->BindAction(OpenTreeAction_, ETriggerEvent::Triggered, this, &UResearchManagerComponent::OpenCloseTree);
 	}
 	else
 	{
