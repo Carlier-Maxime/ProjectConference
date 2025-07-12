@@ -25,7 +25,9 @@ public class ResearchTreeRuntime : ModuleRules
 		PublicDependencyModuleNames.AddRange(
 			new string[]
 			{
-				"Core", "EnhancedInput",
+				"Core", "EnhancedInput",    "UMG",
+				"Slate",
+				"SlateCore"
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);
@@ -38,7 +40,9 @@ public class ResearchTreeRuntime : ModuleRules
 				"Engine",
 				"Slate",
 				"SlateCore",
-				"GameFeatures", "EnhancedInput"
+				"GameFeatures", "EnhancedInput",    "UMG",
+				"Slate",
+				"SlateCore"
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);

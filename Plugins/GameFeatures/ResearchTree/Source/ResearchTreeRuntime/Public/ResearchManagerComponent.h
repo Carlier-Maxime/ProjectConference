@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ResearchWidget.h"
 #include "Components/ActorComponent.h"
 #include "ResearchManagerComponent.generated.h"
 
@@ -31,16 +32,21 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TSoftObjectPtr<UInputAction> OpenTreeAction;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSubclassOf<UResearchWidget> WidgetClass;
+
 public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 	void StartResearch(UResearchNodeData* Node);
-	bool CanResearch(UResearchNodeData* Node) const;
+	bool CanResearch(UResearchNodeData* Node);
 	void OpenCloseTree();
 
 private:
 	UPROPERTY(EditAnywhere)
-	UResearchNodeData* root = nullptr;
+	UResearchNodeData* Root = nullptr;
 	void FinishResearch(UResearchNodeData& Node);
+	UPROPERTY()
+	UResearchWidget* Widget = nullptr;
 };

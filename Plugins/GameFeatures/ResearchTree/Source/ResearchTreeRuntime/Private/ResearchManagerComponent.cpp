@@ -8,6 +8,7 @@
 #include "ResearchNodeData.h"
 #include "GameFeaturesSubsystem.h"
 #include "InputMappingContext.h"
+#include "Blueprint/UserWidget.h"
 
 
 // Sets default values for this component's properties
@@ -54,7 +55,7 @@ void UResearchManagerComponent::BeginPlay()
 	{
 		const auto OpenTreeAction_ = OpenTreeAction.LoadSynchronous();
 		if (!OpenTreeAction_) return;
-		EnhancedInputComponent->BindAction(OpenTreeAction_, ETriggerEvent::Triggered, this, &UResearchManagerComponent::OpenCloseTree);
+		EnhancedInputComponent->BindAction(OpenTreeAction_, ETriggerEvent::Started, this, &UResearchManagerComponent::OpenCloseTree);
 	}
 	else
 	{
@@ -83,7 +84,7 @@ void UResearchManagerComponent::FinishResearch(UResearchNodeData& Node)
 	UGameFeaturesSubsystem::Get().LoadAndActivateGameFeaturePlugin(PluginName, {});
 }
 
-bool UResearchManagerComponent::CanResearch(UResearchNodeData* Node) const
+bool UResearchManagerComponent::CanResearch(UResearchNodeData* Node)
 {
 	if (!Node) return false;
 	for (const auto& Prerequisite : Node->Prerequisites)
@@ -97,5 +98,14 @@ bool UResearchManagerComponent::CanResearch(UResearchNodeData* Node) const
 
 void UResearchManagerComponent::OpenCloseTree()
 {
-	UE_LOG(LogTemp, Log, TEXT("OpenCloseTree"));
+	if (!WidgetClass) return;
+	if (!Widget)
+	{
+		Widget = CreateWidget<UResearchWidget>(GetWorld(), WidgetClass);
+		Widget->Root = Root;
+		Widget->AddToViewport();
+	} else {
+		Widget->RemoveFromParent();
+		Widget = nullptr;
+	}
 }
