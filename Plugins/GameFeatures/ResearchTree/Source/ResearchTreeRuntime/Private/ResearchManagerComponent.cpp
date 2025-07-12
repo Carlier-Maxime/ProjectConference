@@ -75,13 +75,16 @@ void UResearchManagerComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 
 void UResearchManagerComponent::StartResearch(UResearchNodeData* Node)
 {
+	FinishResearch(*Node);
 }
 
 void UResearchManagerComponent::FinishResearch(UResearchNodeData& Node)
 {
 	if (!CanResearch(&Node)) return;
 	const FString PluginName = Node.FeatureToActivateId.PrimaryAssetName.ToString();
-	UGameFeaturesSubsystem::Get().LoadAndActivateGameFeaturePlugin(PluginName, {});
+	FString URL;
+	UGameFeaturesSubsystem::Get().GetPluginURLByName(PluginName, URL);
+	UGameFeaturesSubsystem::Get().LoadAndActivateGameFeaturePlugin(URL, {});
 }
 
 bool UResearchManagerComponent::CanResearch(UResearchNodeData* Node) const
