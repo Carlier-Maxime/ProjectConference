@@ -3,8 +3,12 @@
 
 #include "ResearchManagerComponent.h"
 
+#include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
 #include "ResearchNodeData.h"
 #include "GameFeaturesSubsystem.h"
+#include "ResearchInputConfig.h"
+#include "Engine/AssetManager.h"
 
 
 // Sets default values for this component's properties
@@ -22,9 +26,44 @@ UResearchManagerComponent::UResearchManagerComponent()
 void UResearchManagerComponent::BeginPlay()
 {
 	Super::BeginPlay();
+	AActor* Owner = GetOwner();
+	if (!Owner) return;
 
-	// ...
+	APawn* Pawn = Cast<APawn>(Owner);
+	if (!Pawn) return;
+
+	APlayerController* PC = Cast<APlayerController>(Pawn->GetController());
+	if (!PC) return;
+
+	ULocalPlayer* LocalPlayer = PC->GetLocalPlayer();
+	if (!LocalPlayer)
+	{
+		UE_LOG(LogTemp, Error, TEXT("'%s' Failed to find a Local Player with GetOwner"), *GetNameSafe(this));
+		return;
+	}
+
+	TSharedPtr<FStreamableHandle> Handle = UAssetManager::Get().LoadPrimaryAsset(InputConfigId);
+	const UResearchInputConfig* Cfg = Cast<UResearchInputConfig>(UAssetManager::Get().GetPrimaryAssetObject(InputConfigId));
+	if (!Cfg) return;
 	
+	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
+	{
+		if (!Cfg->IMC.IsValid()) return;
+		const auto IMC = Cfg->IMC.LoadSynchronous();
+		Subsystem->AddMappingContext(IMC, 0);
+	}
+
+	// Set up action bindings
+	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PC->InputComponent))
+	{
+		if (!Cfg->OpenTreeAction.IsValid()) return;
+		const auto OpenTreeAction = Cfg->OpenTreeAction.LoadSynchronous();
+		EnhancedInputComponent->BindAction(OpenTreeAction, ETriggerEvent::Triggered, this, &UResearchManagerComponent::OpenCloseTree);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("'%s' Failed to find an Enhanced Input Component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
+	}
 }
 
 
@@ -58,4 +97,9 @@ bool UResearchManagerComponent::CanResearch(UResearchNodeData* Node) const
 		if (!UGameFeaturesSubsystem::Get().IsGameFeaturePluginActive(PrereqPluginName)) return false;
 	}
 	return true;
+}
+
+void UResearchManagerComponent::OpenCloseTree()
+{
+	UE_LOG(LogTemp, Log, TEXT("OpenCloseTree"));
 }

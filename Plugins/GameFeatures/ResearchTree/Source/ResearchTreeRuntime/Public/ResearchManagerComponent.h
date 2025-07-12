@@ -7,9 +7,12 @@
 #include "ResearchManagerComponent.generated.h"
 
 
+class UResearchInputConfig;
+class UInputMappingContext;
+class UInputAction;
 class UResearchNodeData;
 
-UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
+UCLASS(Blueprintable, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class RESEARCHTREERUNTIME_API UResearchManagerComponent : public UActorComponent
 {
 	GENERATED_BODY()
@@ -22,12 +25,16 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
+	FPrimaryAssetId InputConfigId = FPrimaryAssetId("ResearchInputConfig", NAME_None);
+
 public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 	void StartResearch(UResearchNodeData* Node);
 	bool CanResearch(UResearchNodeData* Node) const;
+	void OpenCloseTree();
 
 private:
 	UPROPERTY(EditAnywhere)
