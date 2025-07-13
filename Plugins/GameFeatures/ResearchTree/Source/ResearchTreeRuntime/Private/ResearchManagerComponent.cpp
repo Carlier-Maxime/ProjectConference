@@ -94,7 +94,10 @@ bool UResearchManagerComponent::CanResearch(UResearchNodeData* Node) const
 	{
 		if (!Prerequisite || !Prerequisite->FeatureToActivateId.IsValid()) return false;
 		FString PrereqPluginName = Prerequisite->FeatureToActivateId.PrimaryAssetName.ToString();
-		if (!UGameFeaturesSubsystem::Get().IsGameFeaturePluginActive(PrereqPluginName)) return false;
+		FString PrereqPluginURL;
+		auto& Subsystem = UGameFeaturesSubsystem::Get();
+		Subsystem.GetPluginURLByName(PrereqPluginName, PrereqPluginURL);
+		if (!Subsystem.IsGameFeaturePluginActive(PrereqPluginURL)) return false;
 	}
 	return true;
 }
