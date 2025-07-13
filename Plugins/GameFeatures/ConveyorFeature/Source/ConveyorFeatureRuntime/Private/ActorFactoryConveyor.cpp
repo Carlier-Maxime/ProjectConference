@@ -7,14 +7,17 @@
 #include "ConveyorLogicComponent.h"
 #include "GameFeatureData.h"
 #include "GameFeatureAction_AddComponents.h"
+#include "Engine/StaticMeshActor.h"
 
 UActorFactoryConveyor::UActorFactoryConveyor()
 {
+	bShouldAutoRegister = false;
 	const auto Data = FConveyorFeatureRuntimeModule::GetGameFeaturesData();
 	NewActorClass = nullptr;
 	if (!Data)
 	{
 		UE_LOG(LogTemp, Error, TEXT("%hs() failed"), __FUNCTION__);
+		NewActorClass = AStaticMeshActor::StaticClass();
 		return;
 	}
 	for (const auto Action : Data->GetActions())
