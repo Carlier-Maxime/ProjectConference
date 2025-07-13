@@ -15,7 +15,7 @@ class UConveyorLogicComponent : public UActorComponent
 public:
 	UConveyorLogicComponent();
 	virtual ~UConveyorLogicComponent() override;
-
+	
 	
 	UPROPERTY(EditAnywhere, Category = "Conveyor")
 	TSubclassOf<AActor> ItemClass;
@@ -27,10 +27,14 @@ public:
 	float Speed = 25.f;
 
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	[[nodiscard]] FVector GetDestinationLocation() const;
+	[[nodiscard]] static TArray<UConveyorLogicComponent*> GetConveyorLogicComponents();
 
 private:
 	UPROPERTY()
 	AActor* CarriedItem = nullptr;
 	FVector DestinationLocation;
+	static TArray<UConveyorLogicComponent*> ConveyorLogicComponents;
 };
