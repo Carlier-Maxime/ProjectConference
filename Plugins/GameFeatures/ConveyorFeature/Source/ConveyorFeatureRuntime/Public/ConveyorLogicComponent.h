@@ -8,7 +8,7 @@
 
 
 UCLASS(Blueprintable, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
-class UConveyorLogicComponent : public UActorComponent
+class CONVEYORFEATURERUNTIME_API UConveyorLogicComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
@@ -23,14 +23,13 @@ public:
 	UPROPERTY(EditAnywhere)
 	AActor* TargetDestination;
 
-	UPROPERTY(EditAnywhere)
-	float Speed = 25.f;
-
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	[[nodiscard]] FVector GetDestinationLocation() const;
 	[[nodiscard]] static TArray<UConveyorLogicComponent*> GetConveyorLogicComponents();
+	[[nodiscard]] static float GetCurrentSpeed();
+	static void SetCurrentSpeed(float NewSpeed);
 
 private:
 	UPROPERTY()
@@ -38,4 +37,5 @@ private:
 	FVector DestinationLocation;
 	static TArray<UConveyorLogicComponent*> ConveyorLogicComponents;
 	void MoveCarriedItem(AActor* CarriedItem, float Force);
+	static float Speed;
 };

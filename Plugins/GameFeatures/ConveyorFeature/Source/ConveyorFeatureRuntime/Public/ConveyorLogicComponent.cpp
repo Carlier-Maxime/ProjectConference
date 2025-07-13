@@ -15,6 +15,8 @@ UConveyorLogicComponent::~UConveyorLogicComponent()
 {
 }
 
+float UConveyorLogicComponent::Speed = 25.f;
+
 
 // Called when the game starts
 void UConveyorLogicComponent::BeginPlay()
@@ -91,4 +93,14 @@ void UConveyorLogicComponent::MoveCarriedItem(AActor* CarriedItem, float Force)
 			CarriedItems.Remove(CarriedItem);
 		}
 	}
+}
+
+float UConveyorLogicComponent::GetCurrentSpeed()
+{
+	return Speed;
+}
+
+void UConveyorLogicComponent::SetCurrentSpeed(const float NewSpeed)
+{
+	Speed = NewSpeed;
 }
