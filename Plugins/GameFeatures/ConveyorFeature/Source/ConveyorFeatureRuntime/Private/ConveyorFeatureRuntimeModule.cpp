@@ -2,6 +2,8 @@
 
 #include "ConveyorFeatureRuntimeModule.h"
 
+#include "GameFeaturesSubsystem.h"
+
 #define LOCTEXT_NAMESPACE "FConveyorFeatureRuntimeModule"
 
 void FConveyorFeatureRuntimeModule::StartupModule()
@@ -19,3 +21,18 @@ void FConveyorFeatureRuntimeModule::ShutdownModule()
 #undef LOCTEXT_NAMESPACE
 
 IMPLEMENT_MODULE(FConveyorFeatureRuntimeModule, ConveyorFeatureRuntime)
+
+const UGameFeatureData* FConveyorFeatureRuntimeModule::GetGameFeaturesData()
+{
+	const FString PluginName = TEXT("ConveyorFeature");
+	auto& Subsystem = UGameFeaturesSubsystem::Get();
+	FString PluginURL;
+	Subsystem.GetPluginURLByName(PluginName, PluginURL);
+	auto Data = Subsystem.GetGameFeatureDataForActivePluginByURL(PluginURL);
+	if (!Data)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("GameFeaturesData introuvable pour %s"), *PluginName);
+		return nullptr;
+	}
+	return Data;
+}

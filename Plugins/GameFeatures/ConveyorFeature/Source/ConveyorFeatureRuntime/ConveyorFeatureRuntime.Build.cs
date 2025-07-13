@@ -38,6 +38,8 @@ public class ConveyorFeatureRuntime : ModuleRules
 				"Engine",
 				"Slate",
 				"SlateCore",
+				"GameFeatures",
+				"UnrealEd",
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);
