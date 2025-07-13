@@ -21,8 +21,8 @@ void UConveyorLogicComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	PrimaryComponentTick.bCanEverTick = true;
-	CarriedItem = GetWorld()->SpawnActor<AActor>(ItemClass);
-	CarriedItem->AttachToComponent(GetOwner()->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
+	CarriedItems.Add(GetWorld()->SpawnActor<AActor>(ItemClass));
+	CarriedItems.Last()->AttachToComponent(GetOwner()->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
 	
 	AActor* Owner = GetOwner();
 	FVector Start = Owner->GetActorLocation();
@@ -31,7 +31,7 @@ void UConveyorLogicComponent::BeginPlay()
 	FHitResult Hit;
 	FCollisionQueryParams Params;
 	Params.AddIgnoredActor(Owner);
-	Params.AddIgnoredActor(CarriedItem);
+	Params.AddIgnoredActor(CarriedItems.Last());
 
 	if (GetWorld()->LineTraceSingleByChannel(Hit, Start, DestinationLocation, ECC_Visibility, Params))
 	{
@@ -44,22 +44,11 @@ void UConveyorLogicComponent::BeginPlay()
 
 void UConveyorLogicComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
-	if (!CarriedItem || !TargetDestination) return;
-
-	FVector Current = CarriedItem->GetActorLocation();
-	FVector Dir = GetOwner()->GetActorForwardVector().GetSafeNormal();
-	float force = Speed * DeltaTime;
-
-	CarriedItem->SetActorLocation(Current + Dir * force);
-	
-	if (FVector::Dist(Current, DestinationLocation) < force)
+	if (!TargetDestination) return;
+	const float Force = Speed * DeltaTime;
+	for (const auto CarriedItem : CarriedItems)
 	{
-		UE_LOG(LogTemp, Log, TEXT("Conveyor %s found destination: %s"),
-			*GetOwner()->GetName(),
-			*TargetDestination->GetName()
-		);
-		CarriedItem->Destroy();
-		CarriedItem = nullptr;
+		MoveCarriedItem(CarriedItem, Force);
 	}
 }
 
@@ -77,4 +66,29 @@ void UConveyorLogicComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 TArray<UConveyorLogicComponent*> UConveyorLogicComponent::GetConveyorLogicComponents()
 {
 	return ConveyorLogicComponents;
+}
+
+void UConveyorLogicComponent::MoveCarriedItem(AActor* CarriedItem, float Force)
+{
+	const FVector Current = CarriedItem->GetActorLocation();
+	const FVector Dir = GetOwner()->GetActorForwardVector().GetSafeNormal();
+	const auto NewLoc = Current + Dir * Force;
+	CarriedItem->SetActorLocation(NewLoc);
+	if (FVector::DotProduct(DestinationLocation - NewLoc, Dir) <= 0)
+	{
+		UE_LOG(LogTemp, Log, TEXT("Conveyor %s found destination: %s"),
+			*GetOwner()->GetName(),
+			*TargetDestination->GetName()
+		);
+		if (const auto NextConveyor = TargetDestination->FindComponentByClass<UConveyorLogicComponent>())
+		{
+			CarriedItems.Remove(CarriedItem);
+			NextConveyor->CarriedItems.Add(CarriedItem);
+		} else
+		{
+			CarriedItem->Destroy();
+			CarriedItem = nullptr;
+			CarriedItems.Remove(CarriedItem);
+		}
+	}
 }

@@ -34,7 +34,8 @@ public:
 
 private:
 	UPROPERTY()
-	AActor* CarriedItem = nullptr;
+	TArray<AActor*> CarriedItems;
 	FVector DestinationLocation;
 	static TArray<UConveyorLogicComponent*> ConveyorLogicComponents;
+	void MoveCarriedItem(AActor* CarriedItem, float Force);
 };
