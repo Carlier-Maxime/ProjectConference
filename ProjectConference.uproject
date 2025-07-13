@@ -41,6 +41,10 @@
 		{
 			"Name": "ResearchTree",
 			"Enabled": true
+		},
+		{
+			"Name": "BoostConveyor",
+			"Enabled": true
 		}
 	]
 }
